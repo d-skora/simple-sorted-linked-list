@@ -1,0 +1,25 @@
+# Composer
+/vendor/
+composer.lock
+
+# PHPUnit
+/.phpunit.cache/
+.phpunit.result.cache
+
+# Coverage reports
+/coverage-html/
+/coverage.xml
+
+# PHPStan
+/.phpstan.cache/
+
+# IDE
+/.idea/
+/.vscode/
+*.swp
+*.swo
+/.claude/
+
+# OS
+.DS_Store
+Thumbs.db

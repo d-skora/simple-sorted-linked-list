@@ -1,0 +1,48 @@
+{
+  "name": "d-skora/simple-sorted-linked-list",
+  "description": "A type-safe sorted linked list for PHP 8.2+, with stable scalar typing, custom sort order, and mutation-safe iteration.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Daniel Skora",
+      "role": "Developer"
+    }
+  ],
+  "keywords": [
+    "linked-list",
+    "sorted",
+    "data-structure",
+    "collection",
+    "type-safe"
+  ],
+  "require": {
+    "php": "^8.2"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.12",
+    "phpstan/phpstan-strict-rules": "^1.6",
+    "phpunit/phpunit": "^11.5",
+    "squizlabs/php_codesniffer": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "SimpleSortedLinkedList\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "SimpleSortedLinkedList\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "scripts": {
+    "test": "phpunit",
+    "phpstan": "phpstan analyse -c phpstan.neon.dist",
+    "phpcs": "phpcs --standard=PSR12 src/ tests/",
+    "phpcbf": "phpcbf --standard=PSR12 src/ tests/"
+  },
+  "minimum-stability": "stable"
+}

@@ -3,10 +3,7 @@
 ![PHP](https://img.shields.io/badge/PHP-8.2%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-A type-safe sorted singly linked list for PHP 8.2+. Items are kept in sorted
-order at all times, with stable scalar typing (a list of `int` stays a list
-of `int`), a pluggable sort order, and an iterator that remains safe even when
-the list is mutated during `foreach`.
+A type-safe sorted singly linked list for PHP 8.2+. Items are kept in sorted order at all times, with stable scalar typing while non-empty, a pluggable sort order, and an iterator that remains safe even when the list is mutated during `foreach`.
 
 ---
 

@@ -24,8 +24,8 @@ final class SortOrder
      * Create a sort order.
      *
      * @param string $mode Sorting mode identifier.
-        * @param (callable(int|string, int|string): mixed)|null $comparator
-        *   Optional custom comparator when mode is custom.
+     * @param (callable(int|string, int|string): mixed)|null $comparator
+     *   Optional custom comparator when mode is custom.
      */
     private function __construct(string $mode, $comparator = null)
     {

@@ -70,7 +70,7 @@ interface SortedLinkedListInterface extends \Countable, \IteratorAggregate
     /**
      * Convert the list to an array of values.
      *
-    * @return list<int|string>
+     * @return list<int|string>
      */
     public function toArray(): array;
 
@@ -107,14 +107,14 @@ interface SortedLinkedListInterface extends \Countable, \IteratorAggregate
     /**
      * Create a copy of the list.
      *
-        * @return self<int, int|string>
-        */
+     * @return self<int, int|string>
+     */
     public function copy(): self;
 
     /**
      * Filter the list using a callback and return a new list.
      *
-        * @param callable(int|string): bool $callback
+     * @param callable(int|string): bool $callback
      * @return self<int, int|string>
      */
     public function filter(callable $callback): self;

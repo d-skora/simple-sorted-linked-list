@@ -154,7 +154,7 @@ final class SortedLinkedList implements SortedLinkedListInterface
     /**
      * Convert the list to an array of values.
      *
-        * @return list<int|string>
+     * @return list<int|string>
      */
     public function toArray(): array
     {
@@ -264,7 +264,7 @@ final class SortedLinkedList implements SortedLinkedListInterface
     /**
      * Filter the list using a callback and return a new list with matching items.
      *
-        * @param callable(int|string): bool $callback Predicate called for each item.
+     * @param callable(int|string): bool $callback Predicate called for each item.
      * @return self
      */
     public function filter(callable $callback): self

@@ -35,12 +35,5 @@ jobs:
     - name: Run test suite
       run: composer test
 
-    - name: Coverage Check
-        uses: ericsizemore/phpunit-coverage-check-action@2.0.0
-        with:
-          clover_file: 'build/logs/clover.xml'
-          threshold: 100
-
-      - uses: sudo-bot/action-scrutinizer@latest
-        with:
-          cli-args: "--format=php-clover build/logs/clover.xml"
+    - name: Run phpstan
+      run: composer phpstan

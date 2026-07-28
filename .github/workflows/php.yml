@@ -33,7 +33,7 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Run test suite
-      run: composer test
+      run: composer test-coverage
 
     - name: Upload coverage report
       if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository

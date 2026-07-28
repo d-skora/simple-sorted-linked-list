@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SimpleSortedLinkedList\Tests\Exceptions;
+namespace SimpleSortedLinkedList\Tests\Unit\Exceptions;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -33,5 +33,13 @@ final class InvalidArgumentExceptionTest extends TestCase
 
         self::assertInstanceOf(InvalidArgumentException::class, $ex);
         self::assertSame('Cannot merge lists with different scalar types.', $ex->getMessage());
+    }
+
+    public function testCannotCompareDifferentScalarTypesProvidesMessage(): void
+    {
+        $ex = InvalidArgumentException::cannotCompareDifferentScalarTypes();
+
+        self::assertInstanceOf(InvalidArgumentException::class, $ex);
+        self::assertSame('Cannot compare values with different scalar types.', $ex->getMessage());
     }
 }

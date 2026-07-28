@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SimpleSortedLinkedList\Tests\LinkedList;
+namespace SimpleSortedLinkedList\Tests\Feature\LinkedList;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -13,6 +13,7 @@ use SimpleSortedLinkedList\Exceptions\UnderflowException;
 use SimpleSortedLinkedList\Interfaces\SortedLinkedListInterface;
 use SimpleSortedLinkedList\LinkedList\SortOrder;
 use SimpleSortedLinkedList\LinkedList\SortedLinkedList;
+use SimpleSortedLinkedList\LinkedList\SortedLinkedListIterator;
 
 #[CoversClass(SortedLinkedList::class)]
 #[CoversClass(OutOfBoundsException::class)]
@@ -81,6 +82,52 @@ final class SortedLinkedListTest extends TestCase
         self::assertFalse($intList->contains(3));
         self::assertSame(2, $intList->countOccurrences(1));
         self::assertSame(1, $intList->countOccurrences(2));
+    }
+
+    public function testContainsReturnsFalseForLookupWithDifferentScalarType(): void
+    {
+        $intList = $this->createAscending([1, 2, 3]);
+
+        self::assertFalse($intList->contains('1'));
+    }
+
+    public function testCountOccurrencesReturnsZeroForLookupWithDifferentScalarType(): void
+    {
+        $intList = $this->createAscending([1, 2, 3]);
+
+        self::assertSame(0, $intList->countOccurrences('1'));
+    }
+
+    public function testGetIteratorReturnsIndependentIterators(): void
+    {
+        $list = $this->createAscending([1, 2, 3]);
+
+        $first = $list->getIterator();
+        $second = $list->getIterator();
+
+        self::assertInstanceOf(SortedLinkedListIterator::class, $first);
+        self::assertInstanceOf(SortedLinkedListIterator::class, $second);
+        self::assertNotSame($first, $second);
+
+        $first->next();
+
+        self::assertSame(2, $first->current());
+        self::assertSame(1, $second->current());
+    }
+
+    public function testGetIteratorKeyReturnsMinusOneWhenSnapshotNodeIsNoLongerReachable(): void
+    {
+        $list = $this->createAscending([1, 2, 3]);
+        $iterator = $list->getIterator();
+
+        $headProperty = new \ReflectionProperty(SortedLinkedList::class, 'head');
+        $head = $headProperty->getValue($list);
+        self::assertInstanceOf(\SimpleSortedLinkedList\LinkedList\Node::class, $head);
+
+        $headProperty->setValue($list, $head->getNext());
+
+        self::assertTrue($iterator->valid());
+        self::assertSame(-1, $iterator->key());
     }
 
     public function testAtReturnsValueByIndex(): void
@@ -276,7 +323,8 @@ final class SortedLinkedListTest extends TestCase
         $countProperty = new \ReflectionProperty(SortedLinkedList::class, 'count');
         $countProperty->setValue($list, 0);
 
-        $head = $list->getHead();
+        $headProperty = new \ReflectionProperty(SortedLinkedList::class, 'head');
+        $head = $headProperty->getValue($list);
         self::assertNotNull($head);
 
         $unlinkNode = new \ReflectionMethod(SortedLinkedList::class, 'unlinkNode');
@@ -293,16 +341,13 @@ final class SortedLinkedListTest extends TestCase
         $left->merge($right);
     }
 
-    public function testMergeThrowsWhenOtherIsNotConcreteSortedLinkedList(): void
+    public function testMergeAcceptsOtherSortedLinkedListInterfaceImplementation(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(InvalidArgumentException::cannotMergeDifferentScalarTypes()->getMessage());
-
         $left = $this->createAscending([1, 2]);
         $other = new class implements SortedLinkedListInterface {
             public function getIterator(): \Traversable
             {
-                return new \ArrayIterator([]);
+                return new \ArrayIterator([3, 4]);
             }
 
             public static function create(iterable $items, SortOrder $order): self
@@ -360,7 +405,7 @@ final class SortedLinkedListTest extends TestCase
 
             public function count(): int
             {
-                return 0;
+                return 2;
             }
 
             public function copy(): self
@@ -379,7 +424,10 @@ final class SortedLinkedListTest extends TestCase
             }
         };
 
-        $left->merge($other);
+        $merged = $left->merge($other);
+
+        self::assertSame([1, 2, 3, 4], $merged->toArray());
+        self::assertSame([1, 2], $left->toArray());
     }
 
     public function testAtThrowsOutOfBoundsException(): void

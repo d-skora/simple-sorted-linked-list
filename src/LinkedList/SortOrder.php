@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleSortedLinkedList\LinkedList;
 
+use SimpleSortedLinkedList\Exceptions\InvalidArgumentException;
 use SimpleSortedLinkedList\Exceptions\RuntimeException;
 
 /**
@@ -16,14 +17,15 @@ final class SortOrder
     private const CUSTOM = 'custom';
 
     private string $mode;
-    /** @var callable(int|string, int|string): mixed|null */
+    /** @var (callable(int|string, int|string): mixed)|null */
     private $comparator;
 
     /**
      * Create a sort order.
      *
      * @param string $mode Sorting mode identifier.
-     * @param callable|null $comparator Optional custom comparator when mode is custom.
+        * @param (callable(int|string, int|string): mixed)|null $comparator
+        *   Optional custom comparator when mode is custom.
      */
     private function __construct(string $mode, $comparator = null)
     {
@@ -99,6 +101,10 @@ final class SortOrder
      */
     private static function compareScalars(int|string $a, int|string $b): int
     {
+        if (gettype($a) !== gettype($b)) {
+            throw InvalidArgumentException::cannotCompareDifferentScalarTypes();
+        }
+
         if ($a === $b) {
             return 0;
         }

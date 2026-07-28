@@ -15,18 +15,27 @@ use SimpleSortedLinkedList\Exceptions\UnderflowException;
 final class SortedLinkedListIterator implements \Iterator
 {
     private SortedLinkedList $list;
-    private ?Node $currentNode;
-    private int $currentIndex = 0;
+    /** @var \Closure(): array<int, Node> */
+    private \Closure $snapshotProvider;
+    /** @var \Closure(Node): int */
+    private \Closure $liveIndexResolver;
+    /** @var array<int, Node> */
+    private array $snapshotNodes = [];
+    private int $position = 0;
 
     /**
      * Create an iterator for the given list.
      *
      * @param SortedLinkedList $list The list to iterate.
+     * @param \Closure(): array<int, Node> $snapshotProvider Returns the current node chain snapshot.
+     * @param \Closure(Node): int $liveIndexResolver Resolves the node's live index in the list.
      */
-    public function __construct(SortedLinkedList $list)
+    public function __construct(SortedLinkedList $list, \Closure $snapshotProvider, \Closure $liveIndexResolver)
     {
         $this->list = $list;
-        $this->currentNode = $this->nextLiveNode($list->getHead());
+        $this->snapshotProvider = $snapshotProvider;
+        $this->liveIndexResolver = $liveIndexResolver;
+        $this->rewind();
     }
 
     /**
@@ -34,8 +43,9 @@ final class SortedLinkedListIterator implements \Iterator
      */
     public function rewind(): void
     {
-        $this->currentNode = $this->nextLiveNode($this->list->getHead());
-        $this->currentIndex = 0;
+        $this->snapshotNodes = ($this->snapshotProvider)();
+        $this->position = 0;
+        $this->advanceToLivePosition();
     }
 
     /**
@@ -46,11 +56,11 @@ final class SortedLinkedListIterator implements \Iterator
      */
     public function current(): int|string
     {
-        if ($this->currentNode === null || $this->currentNode->isRemoved()) {
+        if (!$this->valid()) {
             throw UnderflowException::iteratorNotValid();
         }
 
-        return $this->currentNode->getValue();
+        return $this->snapshotNodes[$this->position]->getValue();
     }
 
     /**
@@ -60,7 +70,11 @@ final class SortedLinkedListIterator implements \Iterator
      */
     public function key(): int
     {
-        return $this->currentIndex;
+        if (!$this->valid()) {
+            return $this->position;
+        }
+
+        return ($this->liveIndexResolver)($this->snapshotNodes[$this->position]);
     }
 
     /**
@@ -68,10 +82,8 @@ final class SortedLinkedListIterator implements \Iterator
      */
     public function next(): void
     {
-        if ($this->currentNode !== null) {
-            $this->currentNode = $this->nextLiveNode($this->currentNode->getNext());
-            $this->currentIndex++;
-        }
+        $this->position++;
+        $this->advanceToLivePosition();
     }
 
     /**
@@ -81,21 +93,18 @@ final class SortedLinkedListIterator implements \Iterator
      */
     public function valid(): bool
     {
-        return $this->currentNode !== null && !$this->currentNode->isRemoved() && $this->list->count() > 0;
+        return isset($this->snapshotNodes[$this->position])
+            && !$this->snapshotNodes[$this->position]->isRemoved()
+            && $this->list->count() > 0;
     }
 
     /**
-     * Skip any removed nodes and return the next live node.
-     *
-     * @param Node|null $node The node to start from.
-     * @return Node|null
+     * Advance internal cursor to the next non-removed snapshot node.
      */
-    private function nextLiveNode(?Node $node): ?Node
+    private function advanceToLivePosition(): void
     {
-        while ($node !== null && $node->isRemoved()) {
-            $node = $node->getNext();
+        while (isset($this->snapshotNodes[$this->position]) && $this->snapshotNodes[$this->position]->isRemoved()) {
+            $this->position++;
         }
-
-        return $node;
     }
 }

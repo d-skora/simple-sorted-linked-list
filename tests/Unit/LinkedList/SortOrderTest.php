@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace SimpleSortedLinkedList\Tests\LinkedList;
+namespace SimpleSortedLinkedList\Tests\Unit\LinkedList;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use SimpleSortedLinkedList\Exceptions\InvalidArgumentException;
 use SimpleSortedLinkedList\Exceptions\RuntimeException;
 use SimpleSortedLinkedList\LinkedList\SortOrder;
 
@@ -67,5 +68,12 @@ final class SortOrderTest extends TestCase
         $comparatorProperty->setValue($order, null);
 
         $order->compare(1, 2);
+    }
+
+    public function testComparingMixedScalarTypesIsRejected(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        SortOrder::ascending()->compare(10, '9');
     }
 }

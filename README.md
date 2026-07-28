@@ -14,8 +14,8 @@ the list is mutated during `foreach`.
 
 - **Always sorted** — items are inserted in the correct position, not sorted
   on read
-- **Stable scalar typing** — once the first item is inserted, the list accepts
-  only the same scalar type (`int` or `string`); mixing types throws immediately
+- **Stable scalar typing** — while non-empty, the list accepts only one scalar
+  type (`int` or `string`); after becoming empty, it can accept either type again
 - **Ascending, descending, or custom order** — pass any comparator callable
 - **Mutation-safe iteration** — you can `remove()`, `removeAll()`, or `clear()`
   inside a `foreach` without corrupting the iterator
@@ -126,11 +126,11 @@ $list->toArray(); // [1, 3, 5]
 | `contains(int\|string): bool` | Membership check |
 | `countOccurrences(int\|string): int` | Count of a specific value |
 | `count(): int` | Total item count (`Countable`) |
-| `toArray(): array` | Snapshot as array |
+| `toArray(): list<int\|string>` | Snapshot as array |
 | `clear()` | Empty the list |
 | `copy()` | Independent copy |
 | `filter(callable): self` | New filtered list |
-| `merge(SortedLinkedListInterface): self` | New merged list |
+| `merge(SortedLinkedListInterface): SortedLinkedListInterface` | New merged list |
 | `getIterator()` | `foreach`-compatible iterator |
 
 ### Sort orders
@@ -145,7 +145,7 @@ $list->toArray(); // [1, 3, 5]
 
 | Exception | Thrown when |
 |---|---|
-| `InvalidArgumentException` | Wrong scalar type inserted, or merging incompatible lists |
+| `InvalidArgumentException` | Wrong scalar type inserted, incompatible scalar comparisons, or scalar-type mismatch while merging |
 | `UnderflowException` | `first()` / `last()` on empty list, or `current()` on exhausted iterator |
 | `OutOfBoundsException` | `at()` with out-of-range index |
 | `RuntimeException` | Custom comparator returns a non-int, or comparator is not set |

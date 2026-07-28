@@ -20,6 +20,7 @@ interface SortedLinkedListInterface extends \Countable, \IteratorAggregate
      * @return \Iterator<int, int|string>
      */
     public function getIterator(): \Traversable;
+
     /**
      * Create a sorted linked list from items using the provided order.
      *
@@ -69,7 +70,7 @@ interface SortedLinkedListInterface extends \Countable, \IteratorAggregate
     /**
      * Convert the list to an array of values.
      *
-     * @return array<int, int|string>
+    * @return list<int|string>
      */
     public function toArray(): array;
 
@@ -106,14 +107,14 @@ interface SortedLinkedListInterface extends \Countable, \IteratorAggregate
     /**
      * Create a copy of the list.
      *
-    * @return self<int, int|string>
-    */
+        * @return self<int, int|string>
+        */
     public function copy(): self;
 
     /**
      * Filter the list using a callback and return a new list.
      *
-     * @param callable $callback
+        * @param callable(int|string): bool $callback
      * @return self<int, int|string>
      */
     public function filter(callable $callback): self;
@@ -121,8 +122,8 @@ interface SortedLinkedListInterface extends \Countable, \IteratorAggregate
     /**
      * Merge another sorted list into this one and return the merged list.
      *
-    * @param SortedLinkedListInterface<int, int|string> $other
-    * @return SortedLinkedListInterface<int, int|string>
+     * @param SortedLinkedListInterface<int, int|string> $other
+     * @return SortedLinkedListInterface<int, int|string>
      */
     public function merge(SortedLinkedListInterface $other): SortedLinkedListInterface;
 }

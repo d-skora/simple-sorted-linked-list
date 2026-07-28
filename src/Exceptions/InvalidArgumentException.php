@@ -40,4 +40,14 @@ final class InvalidArgumentException extends \InvalidArgumentException
     {
         return new self('Cannot merge lists with different scalar types.');
     }
+
+    /**
+     * Create an exception for comparing values with different scalar types.
+     *
+     * @return self
+     */
+    public static function cannotCompareDifferentScalarTypes(): self
+    {
+        return new self('Cannot compare values with different scalar types.');
+    }
 }

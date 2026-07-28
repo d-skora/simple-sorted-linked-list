@@ -32,6 +32,14 @@ final class SortedLinkedList implements SortedLinkedListInterface
     }
 
     /**
+     * Ensure node links are broken when the list is released.
+     */
+    public function __destruct()
+    {
+        $this->clear();
+    }
+
+    /**
      * Create a new sorted linked list and populate it with items.
      *
      * @param iterable<int|string> $items Items to insert into the list.
@@ -180,9 +188,13 @@ final class SortedLinkedList implements SortedLinkedListInterface
      */
     public function contains(int|string $item): bool
     {
+        if (!$this->isCompatibleLookupType($item)) {
+            return false;
+        }
+
         $current = $this->head;
         while ($current !== null) {
-            if ($current->getValue() === $item) {
+            if ($this->valuesEqual($current->getValue(), $item)) {
                 return true;
             }
 
@@ -200,10 +212,14 @@ final class SortedLinkedList implements SortedLinkedListInterface
      */
     public function countOccurrences(int|string $item): int
     {
+        if (!$this->isCompatibleLookupType($item)) {
+            return 0;
+        }
+
         $count = 0;
         $current = $this->head;
         while ($current !== null) {
-            if ($current->getValue() === $item) {
+            if ($this->valuesEqual($current->getValue(), $item)) {
                 $count++;
             }
 
@@ -220,8 +236,10 @@ final class SortedLinkedList implements SortedLinkedListInterface
     {
         $current = $this->head;
         while ($current !== null) {
+            $next = $current->getNext();
             $current->markRemoved();
-            $current = $current->getNext();
+            $current->setNext(null);
+            $current = $next;
         }
 
         $this->count = 0;
@@ -246,7 +264,7 @@ final class SortedLinkedList implements SortedLinkedListInterface
     /**
      * Filter the list using a callback and return a new list with matching items.
      *
-     * @param callable $callback Predicate called for each item.
+        * @param callable(int|string): bool $callback Predicate called for each item.
      * @return self
      */
     public function filter(callable $callback): self
@@ -270,30 +288,12 @@ final class SortedLinkedList implements SortedLinkedListInterface
      */
     public function merge(SortedLinkedListInterface $other): SortedLinkedListInterface
     {
-        if (!$other instanceof self) {
-            throw InvalidArgumentException::cannotMergeDifferentScalarTypes();
-        }
-
-        if ($this->type !== null && $other->type !== null && $this->type !== $other->type) {
-            throw InvalidArgumentException::cannotMergeDifferentScalarTypes();
-        }
-
         $merged = $this->copy();
         foreach ($other as $item) {
             $merged->insert($item);
         }
 
         return $merged;
-    }
-
-    /**
-     * @internal Used by the iterator to traverse the list.
-     *
-     * @return Node|null
-     */
-    public function getHead(): ?Node
-    {
-        return $this->head;
     }
 
     /**
@@ -304,7 +304,36 @@ final class SortedLinkedList implements SortedLinkedListInterface
      */
     public function getIterator(): \Traversable
     {
-        return new SortedLinkedListIterator($this);
+        return new SortedLinkedListIterator(
+            $this,
+            function (): array {
+                $nodes = [];
+                $current = $this->head;
+                while ($current !== null) {
+                    $nodes[] = $current;
+                    $current = $current->getNext();
+                }
+
+                return $nodes;
+            },
+            function (Node $needle): int {
+                $current = $this->head;
+                $index = 0;
+                while ($current !== null) {
+                    if (!$current->isRemoved()) {
+                        if ($current === $needle) {
+                            return $index;
+                        }
+
+                        $index++;
+                    }
+
+                    $current = $current->getNext();
+                }
+
+                return -1;
+            }
+        );
     }
 
     /**
@@ -387,11 +416,15 @@ final class SortedLinkedList implements SortedLinkedListInterface
      */
     private function findNodeWithPrevious(int|string $item): array
     {
+        if (!$this->isCompatibleLookupType($item)) {
+            return [null, null];
+        }
+
         $previous = null;
         $current = $this->head;
 
         while ($current !== null) {
-            if ($current->getValue() === $item) {
+            if ($this->valuesEqual($current->getValue(), $item)) {
                 return [$previous, $current];
             }
 
@@ -468,5 +501,27 @@ final class SortedLinkedList implements SortedLinkedListInterface
         $this->head = null;
         $this->tail = null;
         $this->type = null;
+    }
+
+    /**
+     * @param int|string $left
+     * @param int|string $right
+     */
+    private function valuesEqual(int|string $left, int|string $right): bool
+    {
+        return $this->order->compare($left, $right) === 0;
+    }
+
+    /**
+     * @param int|string $item
+     */
+    private function isCompatibleLookupType(int|string $item): bool
+    {
+        if ($this->type === null) {
+            return false;
+        }
+
+        return (is_int($item) && $this->type === 'int')
+            || (is_string($item) && $this->type === 'string');
     }
 }

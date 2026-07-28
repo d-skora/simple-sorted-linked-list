@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SimpleSortedLinkedList\Tests\LinkedList;
+namespace SimpleSortedLinkedList\Tests\Feature\LinkedList;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -146,6 +146,19 @@ final class SortedLinkedListIteratorTest extends TestCase
 
         $iterator->next();
         self::assertSame(1, $iterator->key());
+    }
+
+    public function testKeyReturnsInternalPositionWhenIteratorIsInvalid(): void
+    {
+        $list = $this->createAscending([1, 2]);
+        $iterator = $list->getIterator();
+
+        $iterator->rewind();
+        $iterator->next();
+        $iterator->next();
+
+        self::assertFalse($iterator->valid());
+        self::assertSame(2, $iterator->key());
     }
 
     public function testNextAdvancesToTheNextElement(): void

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SimpleSortedLinkedList\Tests\Exceptions;
+namespace SimpleSortedLinkedList\Tests\Unit\Exceptions;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

@@ -33,12 +33,14 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Run test suite
-      run: composer test-coverage
+      run: composer test
 
-    - name: Upload coverage report
-      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-      uses: actions/upload-code-coverage@v1
-      with:
-        file: coverge.xml
-        language: PHP
-        label: Code Coverage
+    - name: Coverage Check
+        uses: ericsizemore/phpunit-coverage-check-action@2.0.0
+        with:
+          clover_file: 'build/logs/clover.xml'
+          threshold: 100
+
+      - uses: sudo-bot/action-scrutinizer@latest
+        with:
+          cli-args: "--format=php-clover build/logs/clover.xml"

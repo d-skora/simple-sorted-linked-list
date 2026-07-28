@@ -15,23 +15,23 @@ final class InvalidArgumentExceptionTest extends TestCase
     {
         $ex = InvalidArgumentException::onlyIntOrString();
 
-        $this->assertInstanceOf(InvalidArgumentException::class, $ex);
-        $this->assertSame('Only int and string types are allowed.', $ex->getMessage());
+        self::assertInstanceOf(InvalidArgumentException::class, $ex);
+        self::assertSame('Only int and string types are allowed.', $ex->getMessage());
     }
 
     public function testCannotInsertTypeProvidesMessage(): void
     {
         $ex = InvalidArgumentException::cannotInsertType('int', 'string');
 
-        $this->assertInstanceOf(InvalidArgumentException::class, $ex);
-        $this->assertSame('Cannot insert int into a list of string values.', $ex->getMessage());
+        self::assertInstanceOf(InvalidArgumentException::class, $ex);
+        self::assertSame('Cannot insert int into a list of string values.', $ex->getMessage());
     }
 
     public function testCannotMergeDifferentScalarTypesProvidesMessage(): void
     {
         $ex = InvalidArgumentException::cannotMergeDifferentScalarTypes();
 
-        $this->assertInstanceOf(InvalidArgumentException::class, $ex);
-        $this->assertSame('Cannot merge lists with different scalar types.', $ex->getMessage());
+        self::assertInstanceOf(InvalidArgumentException::class, $ex);
+        self::assertSame('Cannot merge lists with different scalar types.', $ex->getMessage());
     }
 }

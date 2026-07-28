@@ -48,4 +48,14 @@ final class UnderflowException extends \UnderflowException
     {
         return new self('Iterator is not on a valid element.');
     }
+
+    /**
+     * Create an exception for internal count underflow invariants.
+     *
+     * @return self
+     */
+    public static function internalCountUnderflow(): self
+    {
+        return new self('Internal count underflow detected.');
+    }
 }

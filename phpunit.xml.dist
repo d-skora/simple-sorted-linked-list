@@ -22,11 +22,4 @@ failOnWarning="true">
         </include>
     </source>
 
-    <coverage includeUncoveredFiles="true">
-        <report>
-            <text outputFile="php://stdout" showUncoveredFiles="true"/>
-            <clover outputFile="coverage.xml"/>
-            <html outputDirectory="coverage-html"/>
-        </report>
-    </coverage>
 </phpunit>

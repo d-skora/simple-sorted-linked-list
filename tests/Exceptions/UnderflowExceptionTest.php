@@ -15,23 +15,31 @@ final class UnderflowExceptionTest extends TestCase
     {
         $ex = UnderflowException::cannotGetFirst();
 
-        $this->assertInstanceOf(UnderflowException::class, $ex);
-        $this->assertSame('Cannot get first element from an empty list.', $ex->getMessage());
+        self::assertInstanceOf(UnderflowException::class, $ex);
+        self::assertSame('Cannot get first element from an empty list.', $ex->getMessage());
     }
 
     public function testCannotGetLastProvidesMessage(): void
     {
         $ex = UnderflowException::cannotGetLast();
 
-        $this->assertInstanceOf(UnderflowException::class, $ex);
-        $this->assertSame('Cannot get last element from an empty list.', $ex->getMessage());
+        self::assertInstanceOf(UnderflowException::class, $ex);
+        self::assertSame('Cannot get last element from an empty list.', $ex->getMessage());
     }
 
     public function testIteratorNotValidProvidesMessage(): void
     {
         $ex = UnderflowException::iteratorNotValid();
 
-        $this->assertInstanceOf(UnderflowException::class, $ex);
-        $this->assertSame('Iterator is not on a valid element.', $ex->getMessage());
+        self::assertInstanceOf(UnderflowException::class, $ex);
+        self::assertSame('Iterator is not on a valid element.', $ex->getMessage());
+    }
+
+    public function testInternalCountUnderflowProvidesMessage(): void
+    {
+        $ex = UnderflowException::internalCountUnderflow();
+
+        self::assertInstanceOf(UnderflowException::class, $ex);
+        self::assertSame('Internal count underflow detected.', $ex->getMessage());
     }
 }

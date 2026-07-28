@@ -69,14 +69,6 @@ $list = SortedLinkedList::create([-3, 1, -2], $order);
 $list->toArray(); // [1, -2, -3]
 ```
 
-### Factory
-
-```php
-use SimpleSortedLinkedList\LinkedList\SortedLinkedListFactory;
-
-$list = SortedLinkedListFactory::create([5, 3, 1], SortOrder::ascending());
-```
-
 ### Inserting and removing
 
 ```php
@@ -170,7 +162,7 @@ composer install
 composer test
 
 # Run tests with coverage (requires Xdebug)
-XDEBUG_MODE=coverage composer test
+composer test-coverage
 
 # Static analysis (PHPStan level max + strict rules)
 composer phpstan

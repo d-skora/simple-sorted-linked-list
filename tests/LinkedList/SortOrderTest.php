@@ -16,35 +16,35 @@ final class SortOrderTest extends TestCase
     {
         $order = SortOrder::ascending();
 
-        $this->assertSame(-1, $order->compare(1, 2));
-        $this->assertSame(0, $order->compare(2, 2));
-        $this->assertSame(1, $order->compare(3, 2));
+        self::assertSame(-1, $order->compare(1, 2));
+        self::assertSame(0, $order->compare(2, 2));
+        self::assertSame(1, $order->compare(3, 2));
     }
 
     public function testDescendingSortOrderInvertsComparison(): void
     {
         $order = SortOrder::descending();
 
-        $this->assertSame(1, $order->compare(1, 2));
-        $this->assertSame(0, $order->compare(2, 2));
-        $this->assertSame(-1, $order->compare(3, 2));
+        self::assertSame(1, $order->compare(1, 2));
+        self::assertSame(0, $order->compare(2, 2));
+        self::assertSame(-1, $order->compare(3, 2));
     }
 
     public function testAscendingSortOrderComparesStringsAlphabetically(): void
     {
         $order = SortOrder::ascending();
 
-        $this->assertLessThan(0, $order->compare('abc', 'bcd'));
-        $this->assertGreaterThan(0, $order->compare('bcd', 'abc'));
+        self::assertLessThan(0, $order->compare('abc', 'bcd'));
+        self::assertGreaterThan(0, $order->compare('bcd', 'abc'));
     }
 
     public function testCustomSortOrderUsesProvidedComparator(): void
     {
         $order = SortOrder::custom(static fn (int|string $a, int|string $b): int => (int) $b - (int) $a);
 
-        $this->assertSame(1, $order->compare(1, 2));
-        $this->assertSame(0, $order->compare(2, 2));
-        $this->assertSame(-1, $order->compare(3, 2));
+        self::assertSame(1, $order->compare(1, 2));
+        self::assertSame(0, $order->compare(2, 2));
+        self::assertSame(-1, $order->compare(3, 2));
     }
 
     public function testCustomComparatorMustReturnInt(): void
@@ -52,7 +52,7 @@ final class SortOrderTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(RuntimeException::comparatorMustReturnInt()->getMessage());
 
-        $order = SortOrder::custom(static fn (int|string $a, int|string $b): mixed => true);
+        $order = SortOrder::custom(static fn (int|string $a, int|string $b): mixed => $a === $b);
 
         $order->compare(1, 2);
     }
@@ -62,7 +62,7 @@ final class SortOrderTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(RuntimeException::comparatorNotSet()->getMessage());
 
-        $order = SortOrder::custom(static fn (int|string $a, int|string $b): int => 0);
+        $order = SortOrder::custom(static fn (int|string $a, int|string $b): int => $a === $b ? 0 : 1);
         $comparatorProperty = new \ReflectionProperty(SortOrder::class, 'comparator');
         $comparatorProperty->setValue($order, null);
 

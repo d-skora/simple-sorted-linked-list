@@ -15,15 +15,15 @@ final class RuntimeExceptionTest extends TestCase
     {
         $ex = RuntimeException::comparatorMustReturnInt();
 
-        $this->assertInstanceOf(RuntimeException::class, $ex);
-        $this->assertSame('Custom comparator must return an int.', $ex->getMessage());
+        self::assertInstanceOf(RuntimeException::class, $ex);
+        self::assertSame('Custom comparator must return an int.', $ex->getMessage());
     }
 
     public function testComparatorNotSetProvidesMessage(): void
     {
         $ex = RuntimeException::comparatorNotSet();
 
-        $this->assertInstanceOf(RuntimeException::class, $ex);
-        $this->assertSame('Custom comparator is not set.', $ex->getMessage());
+        self::assertInstanceOf(RuntimeException::class, $ex);
+        self::assertSame('Custom comparator is not set.', $ex->getMessage());
     }
 }

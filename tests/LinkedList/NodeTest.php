@@ -15,14 +15,14 @@ final class NodeTest extends TestCase
     {
         $node = new Node(123);
 
-        $this->assertSame(123, $node->getValue());
+        self::assertSame(123, $node->getValue());
     }
 
     public function testGetNextReturnsNullWhenNoNextNodeSet(): void
     {
         $node = new Node('first');
 
-        $this->assertNull($node->getNext());
+        self::assertNull($node->getNext());
     }
 
     public function testSetNextLinksToNextNode(): void
@@ -32,7 +32,7 @@ final class NodeTest extends TestCase
 
         $first->setNext($second);
 
-        $this->assertSame($second, $first->getNext());
+        self::assertSame($second, $first->getNext());
     }
 
     public function testSetNextAllowsNullToClearLink(): void
@@ -43,17 +43,17 @@ final class NodeTest extends TestCase
         $first->setNext($second);
         $first->setNext(null);
 
-        $this->assertNull($first->getNext());
+        self::assertNull($first->getNext());
     }
 
     public function testMarkRemovedSetsRemovedFlag(): void
     {
         $node = new Node(1);
 
-        $this->assertFalse($node->isRemoved());
+        self::assertFalse($node->isRemoved());
 
         $node->markRemoved();
 
-        $this->assertTrue($node->isRemoved());
+        self::assertTrue($node->isRemoved());
     }
 }

@@ -19,6 +19,7 @@ final class SortedLinkedList implements SortedLinkedListInterface
     private ?Node $head = null;
     private ?Node $tail = null;
     private ?string $type = null;
+    /** @var int<0, max> */
     private int $count = 0;
 
     /**
@@ -145,7 +146,7 @@ final class SortedLinkedList implements SortedLinkedListInterface
     /**
      * Convert the list to an array of values.
      *
-     * @return array<int, int|string>
+        * @return list<int|string>
      */
     public function toArray(): array
     {
@@ -309,7 +310,7 @@ final class SortedLinkedList implements SortedLinkedListInterface
     /**
      * Return the number of items in the list.
      *
-     * @return int
+     * @return int<0, max>
      */
     public function count(): int
     {
@@ -422,6 +423,10 @@ final class SortedLinkedList implements SortedLinkedListInterface
         }
 
         $current->markRemoved();
+        if ($this->count === 0) {
+            throw UnderflowException::internalCountUnderflow();
+        }
+
         $this->count--;
         if ($this->count === 0) {
             $this->resetEmptyState();

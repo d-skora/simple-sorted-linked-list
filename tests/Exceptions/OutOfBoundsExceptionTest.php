@@ -15,11 +15,11 @@ final class OutOfBoundsExceptionTest extends TestCase
     {
         $exception = OutOfBoundsException::indexOutOfBounds();
 
-        $this->assertSame('Index out of bounds.', $exception->getMessage());
+        self::assertSame('Index out of bounds.', $exception->getMessage());
     }
 
     public function testExtendsSpOutOfBoundsException(): void
     {
-        $this->assertInstanceOf(\OutOfBoundsException::class, OutOfBoundsException::indexOutOfBounds());
+        self::assertInstanceOf(\OutOfBoundsException::class, OutOfBoundsException::indexOutOfBounds());
     }
 }

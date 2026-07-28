@@ -16,6 +16,9 @@ use SimpleSortedLinkedList\LinkedList\SortedLinkedListIterator;
 #[CoversClass(UnderflowException::class)]
 final class SortedLinkedListIteratorTest extends TestCase
 {
+    /**
+     * @param list<int|string> $items
+     */
     private function createAscending(array $items): SortedLinkedList
     {
         return SortedLinkedList::create($items, SortOrder::ascending());
@@ -27,17 +30,17 @@ final class SortedLinkedListIteratorTest extends TestCase
         $iterator = $list->getIterator();
 
         $iterator->rewind();
-        $this->assertTrue($iterator->valid());
-        $this->assertSame(0, $iterator->key());
-        $this->assertSame(1, $iterator->current());
+        self::assertTrue($iterator->valid());
+        self::assertSame(0, $iterator->key());
+        self::assertSame(1, $iterator->current());
 
         $iterator->next();
-        $this->assertTrue($iterator->valid());
-        $this->assertSame(1, $iterator->key());
-        $this->assertSame(2, $iterator->current());
+        self::assertTrue($iterator->valid());
+        self::assertSame(1, $iterator->key());
+        self::assertSame(2, $iterator->current());
 
         $iterator->next();
-        $this->assertFalse($iterator->valid());
+        self::assertFalse($iterator->valid());
     }
 
     public function testCurrentThrowsWhenIteratorIsInvalid(): void
@@ -62,7 +65,7 @@ final class SortedLinkedListIteratorTest extends TestCase
 
         $list->clear();
 
-        $this->assertFalse($iterator->valid());
+        self::assertFalse($iterator->valid());
     }
 
     public function testCurrentThrowsAfterClear(): void
@@ -82,10 +85,10 @@ final class SortedLinkedListIteratorTest extends TestCase
         $list = $this->createAscending([1, 1]);
         $iterator = $list->getIterator();
 
-        $this->assertTrue($list->removeAll(1));
-        $this->assertSame([], $list->toArray());
-        $this->assertCount(0, $list);
-        $this->assertFalse($iterator->valid());
+        self::assertTrue($list->removeAll(1));
+        self::assertSame([], $list->toArray());
+        self::assertCount(0, $list);
+        self::assertFalse($iterator->valid());
     }
 
     public function testForeachCanSafelyRemoveCurrentElement(): void
@@ -100,8 +103,8 @@ final class SortedLinkedListIteratorTest extends TestCase
             }
         }
 
-        $this->assertSame([1, 2, 3], $values);
-        $this->assertSame([2], $list->toArray());
+        self::assertSame([1, 2, 3], $values);
+        self::assertSame([2], $list->toArray());
     }
 
     public function testForeachSkipsRemovedNodesAfterRemoveAll(): void
@@ -116,8 +119,8 @@ final class SortedLinkedListIteratorTest extends TestCase
             }
         }
 
-        $this->assertSame([1, 2, 3], $values);
-        $this->assertSame([1, 3], $list->toArray());
+        self::assertSame([1, 2, 3], $values);
+        self::assertSame([1, 3], $list->toArray());
     }
 
     public function testRewindResetsTheIteratorToTheFirstElement(): void
@@ -128,9 +131,9 @@ final class SortedLinkedListIteratorTest extends TestCase
         $iterator->next();
         $iterator->rewind();
 
-        $this->assertSame(0, $iterator->key());
-        $this->assertSame(1, $iterator->current());
-        $this->assertTrue($iterator->valid());
+        self::assertSame(0, $iterator->key());
+        self::assertSame(1, $iterator->current());
+        self::assertTrue($iterator->valid());
     }
 
     public function testKeyReturnsTheCurrentIteratorIndex(): void
@@ -139,10 +142,10 @@ final class SortedLinkedListIteratorTest extends TestCase
         $iterator = $list->getIterator();
 
         $iterator->rewind();
-        $this->assertSame(0, $iterator->key());
+        self::assertSame(0, $iterator->key());
 
         $iterator->next();
-        $this->assertSame(1, $iterator->key());
+        self::assertSame(1, $iterator->key());
     }
 
     public function testNextAdvancesToTheNextElement(): void
@@ -153,8 +156,8 @@ final class SortedLinkedListIteratorTest extends TestCase
         $iterator->rewind();
         $iterator->next();
 
-        $this->assertSame(2, $iterator->current());
-        $this->assertSame(1, $iterator->key());
+        self::assertSame(2, $iterator->current());
+        self::assertSame(1, $iterator->key());
     }
 
     public function testValidReflectsIteratorPosition(): void
@@ -163,12 +166,12 @@ final class SortedLinkedListIteratorTest extends TestCase
         $iterator = $list->getIterator();
 
         $iterator->rewind();
-        $this->assertTrue($iterator->valid());
+        self::assertTrue($iterator->valid());
 
         $iterator->next();
-        $this->assertTrue($iterator->valid());
+        self::assertTrue($iterator->valid());
 
         $iterator->next();
-        $this->assertFalse($iterator->valid());
+        self::assertFalse($iterator->valid());
     }
 }
